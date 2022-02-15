@@ -4,6 +4,7 @@
 #include "lelantus_test_fixture.h"
 
 #include <boost/test/unit_test.hpp>
+#include <chrono>
 
 namespace lelantus {
 
@@ -11,14 +12,14 @@ class SigmaExtendedTests : public LelantusTestingSetup {
 public:
     struct Secret {
     public:
-        Secret(int l) : l(l) {
+        Secret(std::size_t l) : l(l) {
             s.randomize();
             v.randomize();
             r.randomize();
         }
 
     public:
-        int l;
+        std::size_t l;
         Scalar s, v, r;
     };
 
@@ -31,7 +32,7 @@ public:
     SigmaExtendedTests() {}
 
 public:
-    void GenerateParams(int _N, int _n, int _m = 0) {
+    void GenerateParams(std::size_t _N, std::size_t _n, std::size_t _m = 0) {
         N = _N;
         n = _n;
         m = _m;
@@ -40,7 +41,7 @@ public:
                 throw std::logic_error("Try to get value of m from invalid n");
             }
 
-            m = std::round(log(N) / log(n));
+            m = (std::size_t)std::round(log(N) / log(n));
         }
 
         h_gens = RandomizeGroupElements(n * m);
@@ -50,7 +51,7 @@ public:
     void GenerateBatchProof(
         Prover &prover,
         std::vector<GroupElement> const &coins,
-        int l,
+        std::size_t l,
         Scalar const &s,
         Scalar const &v,
         Scalar const &r,
@@ -86,9 +87,9 @@ public:
     }
 
 public:
-    int N;
-    int n;
-    int m;
+    std::size_t N;
+    std::size_t n;
+    std::size_t m;
 
     std::vector<GroupElement> h_gens;
     GroupElement g;
@@ -96,88 +97,67 @@ public:
 
 BOOST_FIXTURE_TEST_SUITE(lelantus_sigma_tests, SigmaExtendedTests)
 
-BOOST_AUTO_TEST_CASE(one_out_of_N_batch)
+BOOST_AUTO_TEST_CASE(one_out_of_N_variable_batch)
 {
-    GenerateParams(16, 4);
+    const std::size_t N = 65536;
+    const std::size_t n = 16;
+    const std::size_t m = 4;
+    const std::size_t batch = 20;
+    GenerateParams(N, n, m);
 
-    auto commits = RandomizeGroupElements(N);
+    std::size_t commit_size = N; // require padding
+    auto commits = RandomizeGroupElements(commit_size);
 
     // Generate
     std::vector<Secret> secrets;
-
-    for (auto index : {1, 3, 5, 9, 15}) {
+    std::vector<std::size_t> indexes;
+    std::vector<std::size_t> set_sizes;
+    for (std::size_t j = 0; j < batch; j++) {
+        indexes.emplace_back(j);
+        set_sizes.emplace_back(N);
+    }
+    
+    for (auto index : indexes) {
         secrets.emplace_back(index);
 
         auto &s = secrets.back();
 
         commits[index] = Primitives::double_commit(
-            g, s.s, h_gens[1], s.v, h_gens[0], s.r);
+            g, s.s, h_gens[1], s.v, h_gens[0], s.r
+        );
     }
 
     Prover prover(g, h_gens, n, m);
+    Verifier verifier(g, h_gens, n, m);
     std::vector<Proof> proofs;
     std::vector<Scalar> serials;
+    std::vector<Scalar> challenges;
 
-    Scalar x;
-    x.randomize();
-
-    for (auto const &s : secrets) {
+    for (std::size_t i = 0; i < indexes.size(); i++) {
+        Scalar x;
+        x.randomize();
         proofs.emplace_back();
-        serials.push_back(s.s);
+        serials.push_back(secrets[i].s);
+        std::vector<GroupElement> commits_(commits.begin() + commit_size - set_sizes[i], commits.end());
         GenerateBatchProof(
-            prover, commits, s.l, s.s, s.v, s.r, x, proofs.back());
+            prover,
+            commits_,
+            secrets[i].l - (commit_size - set_sizes[i]),
+            secrets[i].s,
+            secrets[i].v,
+            secrets[i].r,
+            x,
+            proofs.back()
+        );
+        challenges.emplace_back(x);
     }
 
-    Verifier verifier(g, h_gens, n, m);
-    BOOST_CHECK(verifier.batchverify(commits, x, serials, proofs));
-
-    // verify subset of valid proofs should success also
-    serials.pop_back();
-    proofs.pop_back();
-    BOOST_CHECK(verifier.batchverify(commits, x, serials, proofs));
+    auto start = std::chrono::steady_clock::now();
+    BOOST_CHECK(verifier.batchverify(commits, challenges, serials, set_sizes, proofs));
+    auto stop = std::chrono::steady_clock::now();
+    printf("Timing (ms) for batch %ld: %ld\n", batch, std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 }
 
-BOOST_AUTO_TEST_CASE(one_out_of_N_batch_with_some_invalid_proof)
-{
-    GenerateParams(16, 4);
-
-    auto commits = RandomizeGroupElements(N);
-
-    // Generate
-    std::vector<Secret> secrets;
-
-    for (auto index : {1, 3}) {
-        secrets.emplace_back(index);
-
-        auto &s = secrets.back();
-
-        commits[index] = Primitives::double_commit(
-            g, s.s, h_gens[1], s.v, h_gens[0], s.r);
-    }
-
-    Prover prover(g, h_gens, n, m);
-    std::vector<Proof> proofs;
-    std::vector<Scalar> serials;
-
-    Scalar x;
-    x.randomize();
-
-    for (auto const &s : secrets) {
-        proofs.emplace_back();
-        serials.push_back(s.s);
-        GenerateBatchProof(
-            prover, commits, s.l, s.s, s.v, s.r, x, proofs.back());
-    }
-
-    // Add an invalid
-    proofs.push_back(proofs.back());
-
-    serials.emplace_back(serials.back());
-    serials.back().randomize();
-
-    Verifier verifier(g, h_gens, n, m);
-    BOOST_CHECK(!verifier.batchverify(commits, x, serials, proofs));
-}
 
 BOOST_AUTO_TEST_SUITE_END()
 
