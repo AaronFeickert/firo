@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="4f739bf9-44bd-4a74-87cc-b6c9bf938d6c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.txt" beforeDir="false" afterPath="$PROJECT_DIR$/output.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/libaura/hoom_prover.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/libaura/hoom_prover.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/libaura/hoom_verifier.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/libaura/hoom_verifier.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/libaura/sigmaplus_verifier.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/libaura/sigmaplus_verifier.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/libaura/test/protocol_tests.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/libaura/test/protocol_tests.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MakefileLocalSettings">
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$" value="RE_IMPORT" />
+      </map>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="256Keyjjs9Jch0SkNs9QddFHp9e" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.advertisement.text.has.clang-format" value="true" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="cidr.known.project.marker" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="4f739bf9-44bd-4a74-87cc-b6c9bf938d6c" name="Changes" comment="" />
+      <created>1644842195939</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1644842195939</updated>
+      <workItem from="1644842206315" duration="4450000" />
+      <workItem from="1644930126491" duration="7076000" />
+      <workItem from="1645793089793" duration="650000" />
+      <workItem from="1645815443080" duration="666000" />
+      <workItem from="1645971884029" duration="4959000" />
+      <workItem from="1646173939519" duration="32714000" />
+      <workItem from="1646917139792" duration="5791000" />
+      <workItem from="1647089296533" duration="16635000" />
+      <workItem from="1647330087959" duration="20734000" />
+      <workItem from="1648147985442" duration="75000" />
+      <workItem from="1648149018899" duration="329000" />
+      <workItem from="1648156442612" duration="14139000" />
+      <workItem from="1648995096012" duration="1855000" />
+      <workItem from="1649007887469" duration="599000" />
+      <workItem from="1649013551812" duration="6732000" />
+      <workItem from="1649078127365" duration="5124000" />
+      <workItem from="1649153630417" duration="1455000" />
+      <workItem from="1649360015869" duration="6888000" />
+      <workItem from="1649432860897" duration="9308000" />
+      <workItem from="1649610126102" duration="6652000" />
+      <workItem from="1649676269906" duration="5000" />
+      <workItem from="1649757189348" duration="4871000" />
+      <workItem from="1649957315137" duration="599000" />
+      <workItem from="1650030837323" duration="16611000" />
+      <workItem from="1650350599548" duration="13800000" />
+      <workItem from="1650561360553" duration="599000" />
+      <workItem from="1650614363890" duration="1944000" />
+      <workItem from="1650654183590" duration="13304000" />
+      <workItem from="1650809663102" duration="304000" />
+      <workItem from="1650835217517" duration="3000" />
+      <workItem from="1650865894051" duration="20298000" />
+      <workItem from="1650968805758" duration="3108000" />
+      <workItem from="1651258510641" duration="599000" />
+      <workItem from="1651337712834" duration="2666000" />
+      <workItem from="1651430891486" duration="3574000" />
+      <workItem from="1651470776494" duration="5887000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

@@ -55,6 +55,7 @@ LIBBITCOIN_CONSENSUS=libbitcoin_consensus.a
 LIBBITCOIN_CLI=libbitcoin_cli.a
 LIBBITCOIN_UTIL=libbitcoin_util.a
 LIBLELANTUS=liblelantus.a
+LIBAURA=libaura.a
 LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
 LIBBITCOINQT=qt/libfiroqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
@@ -86,7 +87,8 @@ EXTRA_LIBRARIES += \
   $(LIBBITCOIN_WALLET) \
   $(LIBBITCOIN_ZMQ) \
   $(LIBFIRO_SIGMA) \
-  $(LIBLELANTUS)
+  $(LIBLELANTUS) \
+  $(LIBAURA)
 
 lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
 
@@ -692,6 +694,24 @@ libsigma_a_SOURCES = \
   sigma/params.cpp \
   sigma/openssl_context.h
 
+libaura_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) -Werror
+libaura_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) -Werror
+libaura_a_SOURCES = \
+  libaura/r1_proof.h \
+  libaura/r1_proof_generator.h \
+  libaura/r1_proof_generator.hpp \
+  libaura/r1_proof_verifier.h \
+  libaura/r1_proof_verifier.hpp \
+  libaura/sigmaplus_proof.h \
+  libaura/sigmaplus_prover.h \
+  libaura/sigmaplus_prover.hpp \
+  libaura/sigmaplus_verifier.h \
+  libaura/sigmaplus_verifier.hpp \
+  libaura/aura_primitives.h \
+  libaura/aura_primitives.hpp \
+  libaura/params.h\
+  libaura/params.cpp
+  
 if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
@@ -730,6 +750,7 @@ firod_LDADD = \
   $(LIBBITCOIN_WALLET) \
   $(LIBFIRO_SIGMA) \
   $(LIBLELANTUS) \
+  $(LIBAURA) \
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_CONSENSUS) \
   $(LIBBITCOIN_CRYPTO) \
