@@ -100,6 +100,7 @@ BITCOIN_TESTS = \
   libspark/test/coin_test.cpp \
   libspark/test/mint_transaction_test.cpp \
   libspark/test/spend_transaction_test.cpp \
+  libspark/test/payout_transaction_test.cpp \
   sigma/test/coin_spend_tests.cpp \
   sigma/test/coin_tests.cpp \
   sigma/test/primitives_tests.cpp \

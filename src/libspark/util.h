@@ -44,6 +44,7 @@ const std::string LABEL_GENERATOR_H_GROOTLE = "H_GROOTLE";
 const std::string LABEL_HASH_DIV = "DIV";
 const std::string LABEL_HASH_Q2 = "Q2";
 const std::string LABEL_HASH_K = "K";
+const std::string LABEL_HASH_PAYOUT = "PAYOUT";
 const std::string LABEL_HASH_SER = "SER";
 const std::string LABEL_HASH_VAL = "VAL";
 const std::string LABEL_HASH_SER1 = "SER1";
@@ -70,6 +71,7 @@ public:
     static GroupElement hash_div(const std::vector<unsigned char>& d);
     static Scalar hash_Q2(const Scalar& s1, const Scalar& i);
     static Scalar hash_k(const Scalar& k);
+    static Scalar hash_payout(const std::vector<unsigned char>& j, const std::vector<unsigned char>& d, const GroupElement& Q1, const GroupElement& Q2);
     static Scalar hash_ser(const Scalar& k, const std::vector<unsigned char>& serial_context);
     static Scalar hash_val(const Scalar& k);
     static Scalar hash_ser1(const Scalar& s, const GroupElement& D);

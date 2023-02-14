@@ -195,6 +195,20 @@ Scalar SparkUtils::hash_k(const Scalar& k) {
     return hash.finalize_scalar();
 }
 
+// Hash-to-scalar function H_payout
+Scalar SparkUtils::hash_payout(const std::vector<unsigned char>& j, const std::vector<unsigned char>& d, const GroupElement& Q1, const GroupElement& Q2) {
+    Hash hash(LABEL_HASH_PAYOUT);
+
+    CDataStream stream(SER_NETWORK, PROTOCOL_VERSION);
+    stream << j;
+    stream << d;
+    stream << Q1;
+    stream << Q2;
+    hash.include(stream);
+
+    return hash.finalize_scalar();
+}
+
 // Hash-to-scalar function H_ser
 Scalar SparkUtils::hash_ser(const Scalar& k, const std::vector<unsigned char>& serial_context) {
     Hash hash(LABEL_HASH_SER);

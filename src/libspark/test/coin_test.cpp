@@ -52,7 +52,7 @@ BOOST_AUTO_TEST_CASE(mint_identify_recover)
     );
 
     // Identify coin
-    IdentifiedCoinData i_data = coin.identify(incoming_view_key);
+    IdentifiedCoinData i_data = coin.identify(address, incoming_view_key);
     BOOST_CHECK_EQUAL(i_data.i, i);
     BOOST_CHECK_EQUAL_COLLECTIONS(i_data.d.begin(), i_data.d.end(), address.get_d().begin(), address.get_d().end());
     BOOST_CHECK_EQUAL(i_data.v, v);
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(spend_identify_recover)
     );
 
     // Identify coin
-    IdentifiedCoinData i_data = coin.identify(incoming_view_key);
+    IdentifiedCoinData i_data = coin.identify(address, incoming_view_key);
     BOOST_CHECK_EQUAL(i_data.i, i);
     BOOST_CHECK_EQUAL_COLLECTIONS(i_data.d.begin(), i_data.d.end(), address.get_d().begin(), address.get_d().end());
     BOOST_CHECK_EQUAL(i_data.v, v);

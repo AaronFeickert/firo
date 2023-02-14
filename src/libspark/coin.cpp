@@ -19,14 +19,14 @@ Coin::Coin(
 	this->serial_context = serial_context;
 
 	// Validate the type
-	if (type != COIN_TYPE_MINT && type != COIN_TYPE_SPEND) {
+	if (type != COIN_TYPE_MINT && type != COIN_TYPE_SPEND && type != COIN_TYPE_PAYOUT) {
 		throw std::invalid_argument("Bad coin type");
 	}
 	this->type = type;
 
 
 	//
-	// Common elements to both coin types
+	// Common elements to all coin types
 	//
 
 	// Construct the recovery key
@@ -61,7 +61,7 @@ Coin::Coin(
 		CDataStream r_stream(SER_NETWORK, PROTOCOL_VERSION);
 		r_stream << r;
 		this->r_ = AEAD::encrypt(address.get_Q1()*SparkUtils::hash_k(k), "Mint coin data", r_stream);
-	} else {
+	} else if (this->type == COIN_TYPE_SPEND) {
 		// Encrypt recipient data
 		SpendCoinRecipientData r;
 		r.v = v;
@@ -71,6 +71,8 @@ Coin::Coin(
 		CDataStream r_stream(SER_NETWORK, PROTOCOL_VERSION);
 		r_stream << r;
 		this->r_ = AEAD::encrypt(address.get_Q1()*SparkUtils::hash_k(k), "Spend coin data", r_stream);
+	} else {
+		this->v = v;
 	}
 }
 
@@ -110,7 +112,7 @@ RecoveredCoinData Coin::recover(const FullViewKey& full_view_key, const Identifi
 }
 
 // Identify a coin
-IdentifiedCoinData Coin::identify(const IncomingViewKey& incoming_view_key) {
+IdentifiedCoinData Coin::identify(const Address& address, const IncomingViewKey& incoming_view_key) {
 	IdentifiedCoinData data;
 
 	// Deserialization means this process depends on the coin type
@@ -129,7 +131,7 @@ IdentifiedCoinData Coin::identify(const IncomingViewKey& incoming_view_key) {
 		data.v = this->v;
 		data.k = r.k;
 		data.memo = r.memo;
-	} else {
+	} else if (this->type == COIN_TYPE_SPEND) {
 		SpendCoinRecipientData r;
 
 		try {
@@ -144,6 +146,10 @@ IdentifiedCoinData Coin::identify(const IncomingViewKey& incoming_view_key) {
 		data.v = r.v;
 		data.k = r.k;
 		data.memo = r.memo;
+	} else {
+		data.d = address.get_d();
+		data.v = this->v;
+		data.k = SparkUtils::hash_payout(this->serial_context, address.get_d(), address.get_Q1(), address.get_Q2());
 	}
 
 	// Validate the coin

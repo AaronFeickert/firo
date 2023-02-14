@@ -11,9 +11,10 @@ namespace spark {
 
 using namespace secp_primitives;
 
-// Flags for coin types: those generated from mints, and those generated from spends
+// Flags for coin types: those generated from mints, from spends, and from payouts
 const char COIN_TYPE_MINT = 0;
 const char COIN_TYPE_SPEND = 1;
+const char COIN_TYPE_PAYOUT = 2;
 
 struct IdentifiedCoinData {
 	uint64_t i; // diversifier
@@ -76,7 +77,7 @@ public:
 	);
 
 	// Given an incoming view key, extract the coin's nonce, diversifier, value, and memo
-	IdentifiedCoinData identify(const IncomingViewKey& incoming_view_key);
+	IdentifiedCoinData identify(const Address& address, const IncomingViewKey& incoming_view_key);
 
 	// Given a full view key, extract the coin's serial number and tag
 	RecoveredCoinData recover(const FullViewKey& full_view_key, const IdentifiedCoinData& data);
@@ -102,9 +103,9 @@ public:
 		READWRITE(C);
 		READWRITE(r_);
 
-		if (type == COIN_TYPE_MINT) {
+		if (type == COIN_TYPE_MINT || type == COIN_TYPE_PAYOUT) {
 			READWRITE(v);
-		}
+		} 
 	}
 };
 

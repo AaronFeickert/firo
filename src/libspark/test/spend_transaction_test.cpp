@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(generate_verify)
     std::vector<std::vector<unsigned char>> roots;
     const std::size_t w = spend_indices.size();
     for (std::size_t u = 0; u < w; u++) {
-        IdentifiedCoinData identified_coin_data = in_coins[spend_indices[u]].identify(incoming_view_key);
+        IdentifiedCoinData identified_coin_data = in_coins[spend_indices[u]].identify(address, incoming_view_key);
         RecoveredCoinData recovered_coin_data = in_coins[spend_indices[u]].recover(full_view_key, identified_coin_data);
 
         roots.emplace_back(random_char_vector());
