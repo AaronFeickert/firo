@@ -57,7 +57,8 @@ BOOST_AUTO_TEST_CASE(mint_identify_recover)
     BOOST_CHECK_EQUAL_COLLECTIONS(i_data.d.begin(), i_data.d.end(), address.get_d().begin(), address.get_d().end());
     BOOST_CHECK_EQUAL(i_data.v, v);
     BOOST_CHECK_EQUAL(i_data.k, k);
-    BOOST_CHECK_EQUAL(i_data.memo, memo);
+    BOOST_CHECK_EQUAL(strcmp(i_data.memo.c_str(), memo.c_str()), 0);
+    BOOST_CHECK_EQUAL(i_data.memo.size(), params->get_memo_bytes());
 
     // Recover coin
     RecoveredCoinData r_data = coin.recover(full_view_key, i_data);
@@ -105,7 +106,8 @@ BOOST_AUTO_TEST_CASE(spend_identify_recover)
     BOOST_CHECK_EQUAL_COLLECTIONS(i_data.d.begin(), i_data.d.end(), address.get_d().begin(), address.get_d().end());
     BOOST_CHECK_EQUAL(i_data.v, v);
     BOOST_CHECK_EQUAL(i_data.k, k);
-    BOOST_CHECK_EQUAL(i_data.memo, memo);
+    BOOST_CHECK_EQUAL(strcmp(i_data.memo.c_str(), memo.c_str()), 0);
+    BOOST_CHECK_EQUAL(i_data.memo.size(), params->get_memo_bytes());
 
     // Recover coin
     RecoveredCoinData r_data = coin.recover(full_view_key, i_data);
