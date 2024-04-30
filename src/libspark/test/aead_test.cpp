@@ -5,6 +5,22 @@
 
 namespace spark {
 
+// Generate a random char vector from a random scalar
+static std::vector<unsigned char> random_char_vector() {
+    // Because we use a random scalar for simplicity, ensure the sizes match
+    if (SCALAR_ENCODING != STREAM_KEY_SIZE) {
+        throw std::runtime_error("Unexpected key size");
+    }
+
+    Scalar temp;
+    temp.randomize();
+    std::vector<unsigned char> result;
+    result.resize(SCALAR_ENCODING);
+    temp.serialize(result.data());
+
+    return result;
+}
+
 BOOST_FIXTURE_TEST_SUITE(spark_aead_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(complete)
@@ -31,6 +47,37 @@ BOOST_AUTO_TEST_CASE(complete)
 
     // Decrypt
     ser_message = AEAD::decrypt_and_verify(prekey, "Associated data", data_deser);
+
+    // Deserialize
+    int message_;
+    ser_message >> message_;
+
+    BOOST_CHECK_EQUAL(message_, message);
+}
+
+BOOST_AUTO_TEST_CASE(stream_complete)
+{
+    // Key
+    std::vector<unsigned char> key = random_char_vector();
+
+    // Serialize message
+    int message = 12345;
+    CDataStream ser_message(SER_NETWORK, PROTOCOL_VERSION);
+    ser_message << message;
+
+    // Encrypt
+    std::vector<unsigned char> data = AEAD::stream_encrypt(key, ser_message);
+
+    // Serialize encrypted data
+    CDataStream ser_data(SER_NETWORK, PROTOCOL_VERSION);
+    ser_data << data;
+
+    // Deserialize encrypted data
+    std::vector<unsigned char> data_deser;
+    ser_data >> data_deser;
+
+    // Decrypt
+    ser_message = AEAD::stream_decrypt(key, data_deser);
 
     // Deserialize
     int message_;

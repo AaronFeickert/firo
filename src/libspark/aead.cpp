@@ -93,4 +93,72 @@ CDataStream AEAD::decrypt_and_verify(const GroupElement& prekey, const std::stri
 	return result;
 }
 
+// Perform unauthenticated encryption with ChaCha20
+// NOTE: This uses a fixed zero nonce, which is safe when used in Spark as directed
+// It is NOT safe in general to do this!
+std::vector<unsigned char> AEAD::stream_encrypt(const std::vector<unsigned char>& key, CDataStream& data) {
+	// Check key size
+	if (key.size() != STREAM_KEY_SIZE) {
+		throw std::runtime_error("Bad stream cipher key size");
+	}
+
+	// Internal size tracker; we know the size of the data already, and can ignore
+	int TEMP;
+
+	// For our application, we can safely use a zero nonce since keys are never reused
+	std::vector<unsigned char> iv;
+	iv.resize(AEAD_IV_SIZE);
+
+	// Set up the cipher
+	EVP_CIPHER_CTX* ctx;
+	ctx = EVP_CIPHER_CTX_new();
+	EVP_EncryptInit_ex(ctx, EVP_chacha20(), NULL, key.data(), iv.data());
+
+	// Encrypt the plaintext
+	std::vector<unsigned char> ciphertext;
+	ciphertext.resize(data.size());
+	EVP_EncryptUpdate(ctx, ciphertext.data(), &TEMP, reinterpret_cast<unsigned char *>(data.data()), data.size());
+	EVP_EncryptFinal_ex(ctx, NULL, &TEMP);
+
+	// Clean up
+	EVP_CIPHER_CTX_free(ctx);
+
+	return ciphertext;
+}
+
+// Perform unauthenticated decryption with ChaCha20
+// NOTE: This uses a fixed zero nonce, which is safe when used in Spark as directed
+// It is NOT safe in general to do this!
+CDataStream AEAD::stream_decrypt(const std::vector<unsigned char>& key, const std::vector<unsigned char>& data) {
+	// Check key size
+	if (key.size() != STREAM_KEY_SIZE) {
+		throw std::runtime_error("Bad stream cipher key size");
+	}
+
+	// Set up the result
+	CDataStream result(SER_NETWORK, PROTOCOL_VERSION);
+
+	// Internal size tracker; we know the size of the data already, and can ignore
+	int TEMP;
+
+	// For our application, we can safely use a zero nonce since keys are never reused
+	std::vector<unsigned char> iv;
+	iv.resize(AEAD_IV_SIZE);
+
+	// Set up the cipher
+	EVP_CIPHER_CTX* ctx;
+	ctx = EVP_CIPHER_CTX_new();
+	EVP_DecryptInit_ex(ctx, EVP_chacha20(), NULL, key.data(), iv.data());
+
+	// Decrypt the ciphertext
+	result.resize(data.size());
+	EVP_DecryptUpdate(ctx, reinterpret_cast<unsigned char *>(result.data()), &TEMP, data.data(), data.size());
+	
+	// Decrypt and clean up
+	EVP_DecryptFinal_ex(ctx, NULL, &TEMP);
+	EVP_CIPHER_CTX_free(ctx);
+
+	return result;
+}
+
 }

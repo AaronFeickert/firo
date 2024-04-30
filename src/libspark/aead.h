@@ -36,6 +36,9 @@ class AEAD {
 public:
 	static AEADEncryptedData encrypt(const GroupElement& prekey, const std::string additional_data, CDataStream& data);
 	static CDataStream decrypt_and_verify(const GroupElement& prekey, const std::string associated_data, AEADEncryptedData& data);
+
+	static std::vector<unsigned char> stream_encrypt(const std::vector<unsigned char>& key, CDataStream& data);
+	static CDataStream stream_decrypt(const std::vector<unsigned char>& key, const std::vector<unsigned char>& data);
 };
 
 }

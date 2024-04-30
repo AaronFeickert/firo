@@ -64,6 +64,9 @@ const int AEAD_KEY_SIZE = 32; // byte length of the key
 const int AEAD_TAG_SIZE = 16; // byte length of the tag
 const int AEAD_COMMIT_SIZE = 32; // byte length of the key commitment
 
+// Stream cipher constants
+const int STREAM_KEY_SIZE = 32; // byte length of the key
+
 // Address encoding prefix
 const unsigned char ADDRESS_ENCODING_PREFIX = 's';
 
