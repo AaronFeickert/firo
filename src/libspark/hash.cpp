@@ -91,7 +91,6 @@ Scalar Hash::finalize_scalar() {
 
 // Finalize the hash function to a group element
 GroupElement Hash::finalize_group() {
-	const int GROUP_ENCODING = 34;
 	const unsigned char ZERO = 0;
 
     // Ensure we can properly populate a 

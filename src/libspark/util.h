@@ -13,8 +13,9 @@ namespace spark {
 
 using namespace secp_primitives;
 
-// Useful serialization constant
+// Useful serialization constants
 const std::size_t SCALAR_ENCODING = 32;
+const std::size_t GROUP_ENCODING = 34;
 
 // Base protocol separator
 const std::string LABEL_PROTOCOL = "SPARK";
@@ -57,6 +58,7 @@ const std::string LABEL_F4GRUMBLE_H = "SPARK_F4GRUMBLE_H";
 const std::string LABEL_KDF_DIVERSIFIER = "DIVERSIFIER";
 const std::string LABEL_KDF_AEAD = "AEAD";
 const std::string LABEL_COMMIT_AEAD = "COMMIT_AEAD";
+const std::string LABEL_KDF_DISCLOSURE = "DISCLOSURE";
 
 // AEAD constants
 const int AEAD_IV_SIZE = 12; // byte length of the IV
@@ -95,6 +97,7 @@ public:
     static std::vector<unsigned char> kdf_diversifier(const Scalar& s1);
     static std::vector<unsigned char> kdf_aead(const GroupElement& K_der);
     static std::vector<unsigned char> commit_aead(const GroupElement& K_der);
+    static std::vector<unsigned char> kdf_disclosure(const Scalar& s2, const GroupElement& S);
 
     // Diversifier encryption/decryption
     static std::vector<unsigned char> diversifier_encrypt(const std::vector<unsigned char>& key, const uint64_t i);

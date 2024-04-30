@@ -19,7 +19,9 @@ Coin::Coin(
 	const Address& address,
 	const uint64_t& v,
 	const std::string& memo,
-	const std::vector<unsigned char>& serial_context
+	const std::vector<unsigned char>& serial_context,
+	const Scalar& s2,
+	bool encrypt_disclosure,
 ) {
 	this->params = params;
 	this->serial_context = serial_context;
@@ -80,6 +82,22 @@ Coin::Coin(
 		CDataStream r_stream(SER_NETWORK, PROTOCOL_VERSION);
 		r_stream << r;
 		this->r_ = AEAD::encrypt(address.get_Q1()*SparkUtils::hash_k(k), "Spend coin data", r_stream);
+
+		// Encrypt disclosure data
+		DisclosureData disclosure;
+		disclosure.k = k;
+		disclosure.Q1 = address.get_Q1();
+		disclosure.Q2 = address.get_Q2();
+		CDataStream disclosure_stream(SER_NETWORK, PROTOCOL_VERSION);
+		disclosure_stream << disclosure;
+		if (encrypt_disclosure) {
+			this->disclosure = AEAD::stream_encrypt(SparkUtils::kdf_disclosure(s2, this->S), disclosure_stream);
+		} else {
+			// We don't want to (or can't) encrypt disclosure data, so use a random key
+			Scalar dummy_s2;
+			dummy_s2.randomize();
+			this->disclosure = AEAD::stream_encrypt(SparkUtils::kdf_disclosure(dummy_s2, this->S), disclosure_stream);
+		}
 	}
 }
 

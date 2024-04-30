@@ -63,6 +63,21 @@ struct SpendCoinRecipientData {
     }
 };
 
+// Data to be encrypted for disclosure
+struct DisclosureData {
+	Scalar k; // nonce
+	GroupElement Q1, Q2; // recipient address components
+
+	ADD_SERIALIZE_METHODS;
+
+	template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action) {
+        READWRITE(k);
+		READWRITE(Q1);
+		READWRITE(Q2);
+    }
+};
+
 class Coin {
 public:
 	Coin();
@@ -74,7 +89,9 @@ public:
 		const Address& address,
 		const uint64_t& v,
 		const std::string& memo,
-		const std::vector<unsigned char>& serial_context
+		const std::vector<unsigned char>& serial_context,
+		const Scalar& s2, // this can be a default value if there's no desire to encrypt disclosure data
+		bool encrypt_disclosure
 	);
 
 	// Given an incoming view key, extract the coin's nonce, diversifier, value, and memo
@@ -101,6 +118,7 @@ public:
 	char type; // type flag
 	GroupElement S, K, C; // serial commitment, recovery key, value commitment
 	AEADEncryptedData r_; // encrypted recipient data
+	std::vector<unsigned char> disclosure; // encrypted disclosure data
 	uint64_t v; // value
 	std::vector<unsigned char> serial_context; // context to which the serial commitment should be bound (not serialized, but inferred)
 
@@ -134,6 +152,12 @@ public:
 
 		if (type == COIN_TYPE_MINT) {
 			READWRITE(v);
+		}
+		if (type == COIN_TYPE_SPEND) {
+			READWRITE(disclosure);
+			if (disclosure.size() != SCALAR_ENCODING + 2 * GROUP_ENCODING) {
+				throw std::invalid_argument("Cannot deserialize spend coin due to bad disclosure data");
+			}
 		}
 	}
 };
